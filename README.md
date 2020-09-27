@@ -14,3 +14,5 @@ For the newbie,Try this virtual machine：
 `https://d1ves.cowtransfer.com/s/313765b0283642`
 
 `45n24v`
+
+Password：1234
