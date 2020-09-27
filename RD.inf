@@ -1,0 +1,47 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = Scorpion
+  FILE_GUID                      = 99a59ca7-13d4-4650-9389-6f1ed44ec4b9
+  VERSION_STRING                 = 1.0
+  MODULE_TYPE                    = DXE_DRIVER
+  ENTRY_POINT                    = RDEntryPoint
+
+[Sources]
+  RD.h
+  RDMain.c
+  RDBlockIo.c
+  IMG.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  ShellPkg/ShellPkg.dec
+
+[LibraryClasses]
+  IoLib
+  PcdLib
+  BaseLib
+  UefiLib
+  PrintLib
+  BaseMemoryLib
+  MemoryAllocationLib
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  UefiDriverEntryPoint
+  DevicePathLib
+  DxeServicesLib
+[Protocols]
+  gEfiRamDiskProtocolGuid                        ## PRODUCES
+  gEfiDevicePathProtocolGuid                     ## PRODUCES
+  gEfiBlockIoProtocolGuid                        ## PRODUCES
+  gEfiBlockIo2ProtocolGuid                       ## PRODUCES
+  gEfiSimpleFileSystemProtocolGuid               ## SOMETIMES_CONSUMES
+
+[Guids]
+  gEfiVirtualDiskGuid                            ## SOMETIMES_CONSUMES  ## GUID
+
+
+  
+[Depex]
+  TRUE
+
