@@ -17,3 +17,6 @@ Logo是抄的电视剧 [scorpion](https://en.wikipedia.org/wiki/Scorpion_(TV_ser
 `45n24v`
 
 Password：1234
+
+TODO：
+自动添加启动项
