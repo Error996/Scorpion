@@ -17,3 +17,6 @@ For the newbie,Try this virtual machine：
 `45n24v`
 
 Password：1234
+
+TODO:
+Auto Add boot options
