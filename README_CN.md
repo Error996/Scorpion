@@ -4,7 +4,7 @@
 
 一个可以把任意文件包到bios里的玩具/工具
 
-给予RamDisk和EDK2
+基于RamDisk和EDK2
 
 只能用于AMI的主板！！！
 
