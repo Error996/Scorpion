@@ -20,6 +20,3 @@ Password：1234
 
 TODO：
 自动添加启动项
-
-
-有问题去Discussions讨论

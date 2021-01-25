@@ -7,6 +7,9 @@
   ENTRY_POINT                    = RDEntryPoint
 
 [Sources]
+#Add Start By Lundy
+  AddBootOption.h
+#Add End By Lundy
   RD.h
   RDMain.c
   RDBlockIo.c
@@ -30,6 +33,13 @@
   UefiDriverEntryPoint
   DevicePathLib
   DxeServicesLib
+#Add Start By Lundy  
+#  ReportStatusCodeLib
+  DebugLib
+  UefiBootManagerLib
+  PlatformBootManagerLib
+#Add End By Lundy  
+  
 [Protocols]
   gEfiRamDiskProtocolGuid                        ## PRODUCES
   gEfiDevicePathProtocolGuid                     ## PRODUCES
@@ -39,9 +49,18 @@
 
 [Guids]
   gEfiVirtualDiskGuid                            ## SOMETIMES_CONSUMES  ## GUID
-
+#Add Start By Lundy  
+  gEfiGlobalVariableGuid
+  gEfiEventReadyToBootGuid
+#Add End By Lundy
 
   
 [Depex]
   TRUE
+
+
+
+
+
+
 

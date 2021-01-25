@@ -1,4 +1,10 @@
 #include "RD.h"
+//Add Start By Lundy
+#include "AddBootOption.h"
+#define EFI_VIRTUAL_DISK_FILE_NAME L"\\EFI\\OC\\OpenCore.efi"
+
+#define NEW_BOOT_OPTION_NAME L"Scorpion"
+//Add End By Lundy
 extern unsigned char __data_img[];
 
 extern unsigned int __data_img_len;
@@ -233,6 +239,166 @@ ErrorExit:
 }
 
 
+//**************************************************************************************
+//Add Start By Lundy
+VOID
+EFIAPI
+LundyAddRamDisk(
+  IN EFI_EVENT                Event,
+  IN VOID                     *Context
+  )
+{
+  EFI_HANDLE                    *FileSystemHandles;
+  UINTN                         NumberFileSystemHandles;
+  UINTN                         Index;
+  EFI_DEVICE_PATH_PROTOCOL      *InDevicePath;
+  BOOLEAN                       flag;
+  //CHAR16                        *DevPathStr;
+
+  UINTN                        BootOptionCount;
+  EFI_BOOT_MANAGER_LOAD_OPTION *BootOptions;
+  //UINTN                        Index;
+  //UINTN                        OptionNumber;
+
+  //Print(L"LundyAddRamDisk Start\n");
+
+  BootOptions = EfiBootManagerGetLoadOptions (&BootOptionCount, LoadOptionTypeBoot);
+
+  for (Index = 0; Index < BootOptionCount; Index++) {
+	if(!StrCmp(NEW_BOOT_OPTION_NAME,BootOptions[Index].Description)){
+      EfiBootManagerDeleteLoadOptionVariable (BootOptions[Index].OptionNumber, LoadOptionTypeBoot);;
+    }
+  }
+
+
+  
+  gBS->LocateHandleBuffer (
+        ByProtocol,
+        &gEfiSimpleFileSystemProtocolGuid,
+        NULL,
+        &NumberFileSystemHandles,
+        &FileSystemHandles
+        );
+  // for (Index = 0; Index < NumberFileSystemHandles; Index++) {
+
+  //   InDevicePath = DevicePathFromHandle (FileSystemHandles[Index]);
+  //   if(IsVirtualDiskNew(InDevicePath)){
+  //     DevPathStr = ConvertDevicePathToText (InDevicePath, FALSE, FALSE);
+  //     DEBUG ((DEBUG_INFO , "Lundy %s\n", DevPathStr));
+  //     if(StrlenNew(DevPathStr)>60)
+  //       return;
+  //   }
+  // }
+
+  for (Index = 0; Index < NumberFileSystemHandles; Index++) {
+
+  	InDevicePath = DevicePathFromHandle (FileSystemHandles[Index]);
+  	flag = IsVirtualDiskNew(InDevicePath);
+    //Print(L"66666 %d\n",flag);
+  	if(flag){
+		RegisterRamDiskBootOption(InDevicePath,NEW_BOOT_OPTION_NAME, (UINTN) -1, TRUE);
+  		break;
+  	}
+  }
+}
+
+
+BOOLEAN
+IsVirtualDiskNew (
+  IN VOID                 *DevPath
+  )
+{
+  MEDIA_RAM_DISK_DEVICE_PATH *RamDisk;
+
+  RamDisk = DevPath;
+
+  if (CompareGuid (&RamDisk->TypeGuid, &gEfiVirtualDiskGuid)) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+
+
+EFI_DEVICE_PATH_PROTOCOL *
+EFIAPI
+LundyAppendNew (
+  IN EFI_DEVICE_PATH_PROTOCOL        *InDevicePath,  
+  IN CONST CHAR16                    *FileName
+  )
+{
+  UINTN                     Size;
+  FILEPATH_DEVICE_PATH      *FilePath;
+  EFI_DEVICE_PATH_PROTOCOL  *DevicePath;
+  EFI_DEVICE_PATH_PROTOCOL  *FileDevicePath;
+
+  DevicePath = NULL;
+
+  Size = StrSize (FileName);
+  FileDevicePath = AllocatePool (Size + SIZE_OF_FILEPATH_DEVICE_PATH + END_DEVICE_PATH_LENGTH);
+  if (FileDevicePath != NULL) {
+    FilePath = (FILEPATH_DEVICE_PATH *) FileDevicePath;
+    FilePath->Header.Type    = MEDIA_DEVICE_PATH;
+    FilePath->Header.SubType = MEDIA_FILEPATH_DP;
+    CopyMem (&FilePath->PathName, FileName, Size);
+    SetDevicePathNodeLength (&FilePath->Header, Size + SIZE_OF_FILEPATH_DEVICE_PATH);
+    SetDevicePathEndNode (NextDevicePathNode (&FilePath->Header));
+
+    //if (Device != NULL) {
+    //  DevicePath = DevicePathFromHandle (Device);
+    //}
+
+    DevicePath = AppendDevicePath (InDevicePath, FileDevicePath);
+    FreePool (FileDevicePath);
+  }
+
+  return DevicePath;
+}
+
+  
+UINTN
+RegisterRamDiskBootOption (
+  EFI_DEVICE_PATH_PROTOCOL         *RamDp,
+  CHAR16                           *Description,
+  UINTN                            Position,
+  BOOLEAN                          IsBootCategory
+  )
+{
+  EFI_STATUS                       Status;
+  EFI_BOOT_MANAGER_LOAD_OPTION     NewOption;
+  EFI_DEVICE_PATH_PROTOCOL         *DevicePath;
+  UINTN                            OptionNumber;
+
+  DevicePath = LundyAppendNew(RamDp,EFI_VIRTUAL_DISK_FILE_NAME);
+  Status = EfiBootManagerInitializeLoadOption (
+             &NewOption,
+             LoadOptionNumberUnassigned,
+             LoadOptionTypeBoot,
+             IsBootCategory ? LOAD_OPTION_ACTIVE : LOAD_OPTION_CATEGORY_APP,
+             Description,
+             DevicePath,
+             NULL,
+             0
+             );
+  ASSERT_EFI_ERROR (Status);
+  FreePool (DevicePath);
+
+  Status = EfiBootManagerAddLoadOptionVariable (&NewOption, Position);
+  ASSERT_EFI_ERROR (Status);
+
+  OptionNumber = NewOption.OptionNumber;
+
+  EfiBootManagerFreeLoadOption (&NewOption);
+
+  return OptionNumber;
+}
+//Add End By Lundy
+//**************************************************************************************
+
+
+
+
+
 /**
   The entry point for RamDisk
 
@@ -253,6 +419,9 @@ RDEntryPoint (
   EFI_STATUS                      Status;
   UINT64                          *StartingAddr;
   EFI_DEVICE_PATH_PROTOCOL        *DevicePath;
+  //Add Start By Lundy
+  EFI_EVENT   ReadyToBootEvent;
+  //Add End By Lundy
   //
   // Initialize the list of registered RAM disks maintained by the driver
   //
@@ -284,9 +453,28 @@ RDEntryPoint (
   if (EFI_ERROR (Status)) {
     DEBUG ((EFI_D_ERROR, "Register ramdisk failed\n"));
   }
+//Add Start By Lundy
+ Status = gBS->CreateEventEx (
+                 EVT_NOTIFY_SIGNAL,
+                 TPL_NOTIFY,
+                 LundyAddRamDisk,
+                 NULL,
+                 &gEfiEventReadyToBootGuid,
+                 &ReadyToBootEvent
+                 );
+  if (EFI_ERROR (Status)) {
+     DEBUG ((EFI_D_ERROR, "Create ramdisk failed\n"));
+  }
+  //Add End By Lundy
+  
   return EFI_SUCCESS;
 
 }
+
+
+
+
+
 
 
 
