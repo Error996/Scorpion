@@ -6,7 +6,7 @@ A Toy/Tool To Package AnyThing into bios
 
 Base On RamDisk and Edk2
 
-Only Work On AMI Motherboard!!!!
+Work Good on Ami/Phoenix Motherboard
 
 The Logo was cpoy From TV series [scorpion](https://en.wikipedia.org/wiki/Scorpion_(TV_series))
 
