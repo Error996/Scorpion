@@ -6,7 +6,7 @@
 
 基于RamDisk和EDK2
 
-只能用于AMI的主板！！！
+支持INTEL和AMD的主板，包括AMI和Phoenix，不限于x86，已测试可用于ARM！
 
 Logo是抄的电视剧 [scorpion](https://en.wikipedia.org/wiki/Scorpion_(TV_series))的
 
