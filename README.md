@@ -4,7 +4,7 @@ English | [简体中文](https://github.com/d1ves/Scorpion/blob/master/README_CN
 
 A Toy/Tool To Package AnyThing into bios
 
-Base On RamDisk and Edk2
+Base On RamDisk and [UDK2018](https://github.com/tianocore/edk2/tree/UDK2018)
 
 Work Good on Ami/Phoenix Motherboard
 
