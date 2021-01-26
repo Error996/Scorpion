@@ -4,7 +4,7 @@
 
 一个可以把任意文件包到bios里的玩具/工具
 
-基于RamDisk和EDK2
+基于RamDisk和[UDK2018](https://github.com/tianocore/edk2/tree/UDK2018)
 
 支持INTEL和AMD的主板，包括AMI和Phoenix，不限于x86，已测试可用于ARM！
 
