@@ -14,7 +14,7 @@ For the newbie,Try this virtual machine(Scorpion.7z)：
 
 [Download Me](https://d1ves.cowtransfer.com/s/2d4001eb3a704c)
 
-[Download Me 2(](http://animity.org:5000/sharing/lG6OaT7xp)
+[Download Me 2(danwan)](http://animity.org:5000/sharing/lG6OaT7xp)
 
 Linux Password：1234
 
