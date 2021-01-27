@@ -16,6 +16,8 @@ Logo是抄的电视剧 [scorpion](https://en.wikipedia.org/wiki/Scorpion_(TV_ser
 
 [分流下载地址(感谢蛋总）](http://animity.org:5000/sharing/lG6OaT7xp)
 
+[分流下载地址(感谢老中医,提取码dxjg)](https://pan.xunlei.com/s/VMS2F2D2Sp03QEDKRrzeBAEmA1)
+
 Linux Password：1234
 
 已知BUG：部分主板刷完需要重启两次
